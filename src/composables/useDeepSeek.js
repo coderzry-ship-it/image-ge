@@ -20,6 +20,7 @@ const OPTIMIZE_SYSTEM_PROMPT = `你是一个 AI 绘画提示词优化专家。�
 
 export function useDeepSeek() {
   const store = useAppStore()
+  let abortController = null
 
   async function generatePrompts() {
     const items = parseItems(store.rawContent)
@@ -41,7 +42,7 @@ export function useDeepSeek() {
         { role: 'user', content: contentUserPrompt },
       ],
       temperature: 0.7,
-    })
+    }, { signal: abortController?.signal })
 
     let contentText = contentResp.data.choices?.[0]?.message?.content || ''
     contentText = contentText.replace(/\`\`\`json\s*/g, '').replace(/\`\`\`/g, '').trim()
@@ -73,7 +74,7 @@ export function useDeepSeek() {
           { role: 'user', content: coverUserPrompt },
         ],
         temperature: 0.7,
-      })
+      }, { signal: abortController?.signal })
 
       let coverText = coverResp.data.choices?.[0]?.message?.content || ''
       coverText = coverText.replace(/\`\`\`json\s*/g, '').replace(/\`\`\`/g, '').trim()
@@ -120,5 +121,17 @@ export function useDeepSeek() {
     return optimized
   }
 
-  return { generatePrompts, optimizePrompt }
+  function createAbortController() {
+    abortController = new AbortController()
+    return abortController
+  }
+
+  function cancelGeneration() {
+    if (abortController) {
+      abortController.abort()
+      abortController = null
+    }
+  }
+
+  return { generatePrompts, optimizePrompt, createAbortController, cancelGeneration }
 }

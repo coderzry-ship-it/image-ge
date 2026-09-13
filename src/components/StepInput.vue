@@ -10,7 +10,7 @@ import { useDeepSeek } from '../composables/useDeepSeek'
 import { ref } from 'vue'
 
 const store = useAppStore()
-const { generatePrompts } = useDeepSeek()
+const { generatePrompts, createAbortController, cancelGeneration } = useDeepSeek()
 const loading = ref(false)
 const logText = ref('')
 
@@ -28,6 +28,7 @@ async function handleGenerate() {
 
   loading.value = true
   logText.value = ''
+  createAbortController()
 
   try {
     logText.value += '📤 正在调用 DeepSeek 生成提示词...\n'
@@ -41,11 +42,20 @@ async function handleGenerate() {
       store.currentStep = 2
     }
   } catch (err) {
-    logText.value += `❌ 错误: ${err.response?.data?.error?.message || err.message}\n`
-    ElMessage.error('生成失败，请查看日志')
+    if (err.code === 'ERR_CANCELED' || err.name === 'CanceledError') {
+      logText.value += '⏹️ 已停止生成\n'
+      ElMessage.info('已停止生成')
+    } else {
+      logText.value += `❌ 错误: ${err.response?.data?.error?.message || err.message}\n`
+      ElMessage.error('生成失败，请查看日志')
+    }
   } finally {
     loading.value = false
   }
+}
+function handleStop() {
+  cancelGeneration()
+  loading.value = false
 }
 </script>
 
@@ -157,13 +167,21 @@ async function handleGenerate() {
       </ElRow>
 
       <ElButton
+        v-if="!loading"
         type="primary"
         :icon="MagicStick"
-        :loading="loading"
         size="large"
         @click="handleGenerate"
       >
         🤖 生成提示词
+      </ElButton>
+      <ElButton
+        v-else
+        type="danger"
+        size="large"
+        @click="handleStop"
+      >
+        ⏹️ 停止生成
       </ElButton>
     </ElForm>
 
