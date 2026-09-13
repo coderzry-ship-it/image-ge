@@ -1,6 +1,7 @@
 import axios from 'axios'
 import JSZip from 'jszip'
 import { useAppStore } from '../stores/appStore'
+import { base64ToFile, tryShareFiles } from '../utils/mobile'
 
 export function useImageGen() {
   const store = useAppStore()
@@ -107,8 +108,31 @@ export function useImageGen() {
     URL.revokeObjectURL(a.href)
   }
 
+  async function shareOne(idx) {
+    const r = store.results[idx]
+    if (!r?.url) return false
+    try {
+      const file = await base64ToFile(r.url, (idx + 1) + '.png')
+      return await tryShareFiles([file])
+    } catch {
+      return false
+    }
+  }
+
+  async function shareAll() {
+    const done = store.results.filter(r => r.status === 'done' && r.url)
+    if (!done.length) throw new Error('没有可分享的图片')
+    const files = []
+    for (let i = 0; i < done.length; i++) {
+      const r = done[i]
+      const file = await base64ToFile(r.url, (i + 1) + '.png')
+      files.push(file)
+    }
+    return await tryShareFiles(files)
+  }
+
   return {
     generateOne, generateAll, retryOne, retryAllFailed,
-    downloadOne, downloadAllZip, onLog, logs,
+    downloadOne, downloadAllZip, shareOne, shareAll, onLog, logs,
   }
 }

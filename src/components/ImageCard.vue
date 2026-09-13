@@ -1,12 +1,14 @@
 <script setup>
 import { ElCard, ElTag, ElButton, ElTooltip } from 'element-plus'
-import { Refresh, Edit, Download, Picture } from '@element-plus/icons-vue'
+import { Refresh, Edit, Download, Picture, Cellphone } from '@element-plus/icons-vue'
+import { isMobile } from '../utils/mobile'
 
 defineProps({
   result: Object,
 })
 
-const emit = defineEmits(['retry', 'edit', 'download'])
+const emit = defineEmits(['retry', 'edit', 'download', 'save'])
+const mobile = isMobile()
 </script>
 
 <template>
@@ -52,6 +54,9 @@ const emit = defineEmits(['retry', 'edit', 'download'])
         </ElTooltip>
         <ElTooltip v-if="result.url" content="下载">
           <ElButton :icon="Download" circle size="small" @click="emit('download')" />
+        </ElTooltip>
+        <ElTooltip v-if="result.url && mobile" content="保存到相册">
+          <ElButton :icon="Cellphone" circle size="small" type="success" @click="emit('save')" />
         </ElTooltip>
       </div>
     </div>
