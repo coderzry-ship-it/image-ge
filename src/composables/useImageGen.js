@@ -24,7 +24,7 @@ export function useImageGen() {
           model: store.imageModel,
           prompt: r.prompt,
           n: 1,
-          size: '768x1024',
+          size: store.imageSize,
           response_format: 'b64_json',
         },
         { headers: { Authorization: `Bearer ${store.oaiKey}` } }

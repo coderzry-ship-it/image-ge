@@ -21,6 +21,7 @@ export const useAppStore = defineStore('app', () => {
   const dsModel = ref(saved.dsModel || 'deepseek-v4-pro')
   const oaiKey = ref(saved.oaiKey || '')
   const imageModel = ref(saved.imageModel || 'gpt-image-2-1k')
+  const imageSize = ref(saved.imageSize || '3:4')
   const watermarkEnabled = ref(saved.watermarkEnabled ?? true)
   const watermarkText = ref(saved.watermarkText || '原创作者：@图解万物')
   const isDark = ref(saved.isDark ?? false)
@@ -57,6 +58,7 @@ export const useAppStore = defineStore('app', () => {
       dsModel: dsModel.value,
       oaiKey: oaiKey.value,
       imageModel: imageModel.value,
+      imageSize: imageSize.value,
       watermarkEnabled: watermarkEnabled.value,
       watermarkText: watermarkText.value,
       isDark: isDark.value,
@@ -77,7 +79,7 @@ export const useAppStore = defineStore('app', () => {
 
   return {
     dsKey, dsModel, oaiKey, imageModel,
-    watermarkEnabled, watermarkText, isDark,
+    watermarkEnabled, watermarkText, isDark, imageSize,
     title, rawContent, perImage, genCover, autoGenerate,
     currentStep, prompts, results, watermark,
     doneCount, persistConfig, initResults,

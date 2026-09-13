@@ -16,7 +16,7 @@ const logText = ref('')
 
 watch(
   () => [store.dsKey, store.dsModel, store.oaiKey, store.imageModel,
-         store.watermarkEnabled, store.watermarkText, store.isDark],
+         store.watermarkEnabled, store.watermarkText, store.isDark, store.imageSize],
   () => store.persistConfig(),
   { deep: true }
 )
@@ -83,6 +83,24 @@ async function handleGenerate() {
               <ElOption value="gemini-image" label="gemini-image" />
               <ElOption value="gemini-image-pro" label="gemini-image-pro" />
               <ElOption value="gemini-3.1-flash-image-4k" label="gemini-3.1-flash-image-4k" />
+            </ElSelect>
+          </ElFormItem>
+        </ElCol>
+        <ElCol :xs="24" :sm="12" :md="6">
+          <ElFormItem label="图片尺寸">
+            <ElSelect v-model="store.imageSize" filterable allow-create default-first-option style="width: 100%" placeholder="选择或输入尺寸">
+              <ElOption value="3:4" label="3:4 竖屏（推荐）" />
+              <ElOption value="9:16" label="9:16 竖屏" />
+              <ElOption value="1:1" label="1:1 方形" />
+              <ElOption value="16:9" label="16:9 横屏" />
+              <ElOption value="1024x1024" label="1024x1024 方形" />
+              <ElOption value="1024x1824" label="1024x1824 竖屏" />
+              <ElOption value="720x1280" label="720x1280 竖屏" />
+              <ElOption value="1824x1024" label="1824x1024 横屏" />
+              <ElOption value="1280x720" label="1280x720 横屏" />
+              <ElOption value="512x512" label="512x512 方形" />
+              <ElOption value="portrait" label="portrait 竖屏" />
+              <ElOption value="landscape" label="landscape 横屏" />
             </ElSelect>
           </ElFormItem>
         </ElCol>
