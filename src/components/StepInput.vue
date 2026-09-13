@@ -32,9 +32,14 @@ async function handleGenerate() {
   try {
     logText.value += '📤 正在调用 DeepSeek 生成提示词...\n'
     const result = await generatePrompts()
-    store.prompts = result
     logText.value += `✅ 共生成 ${result.length} 张提示词\n🎉 完成！`
-    store.currentStep = 2
+    store.prompts = result
+    if (store.autoGenerate) {
+      store.initResults()
+      store.currentStep = 3
+    } else {
+      store.currentStep = 2
+    }
   } catch (err) {
     logText.value += `❌ 错误: ${err.response?.data?.error?.message || err.message}\n`
     ElMessage.error('生成失败，请查看日志')
@@ -114,7 +119,12 @@ async function handleGenerate() {
             <ElSwitch v-model="store.watermarkEnabled" />
           </ElFormItem>
         </ElCol>
-        <ElCol :span="10">
+        <ElCol :span="4">
+          <ElFormItem label="自动出图">
+            <ElSwitch v-model="store.autoGenerate" />
+          </ElFormItem>
+        </ElCol>
+        <ElCol :span="6">
           <ElFormItem label="水印内容">
             <ElInput
               v-model="store.watermarkText"

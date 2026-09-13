@@ -29,7 +29,10 @@ export const useAppStore = defineStore('app', () => {
   const title = ref('')
   const rawContent = ref('')
   const perImage = ref(3)
-  const genCover = ref(true)
+  const genCover = ref(false)
+
+  // Options
+  const autoGenerate = ref(true)
 
   // Steps
   const currentStep = ref(1)
@@ -75,7 +78,7 @@ export const useAppStore = defineStore('app', () => {
   return {
     dsKey, dsModel, oaiKey, imageModel,
     watermarkEnabled, watermarkText, isDark,
-    title, rawContent, perImage, genCover,
+    title, rawContent, perImage, genCover, autoGenerate,
     currentStep, prompts, results, watermark,
     doneCount, persistConfig, initResults,
   }
