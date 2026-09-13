@@ -141,4 +141,14 @@ const emit = defineEmits(['retry', 'edit', 'download'])
   gap: 4px;
   flex-shrink: 0;
 }
+@media (max-width: 768px) {
+  .card-footer {
+    padding: 10px 10px;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+  .card-label {
+    font-size: 12px;
+  }
+}
 </style>

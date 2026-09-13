@@ -55,12 +55,12 @@ async function handleGenerate() {
 
     <ElForm label-position="top">
       <ElRow :gutter="16">
-        <ElCol :span="6">
+        <ElCol :xs="24" :sm="12" :md="6">
           <ElFormItem label="DeepSeek API Key">
             <ElInput v-model="store.dsKey" type="password" show-password placeholder="sk-..." />
           </ElFormItem>
         </ElCol>
-        <ElCol :span="6">
+        <ElCol :xs="24" :sm="12" :md="6">
           <ElFormItem label="DeepSeek 模型">
             <ElSelect v-model="store.dsModel" style="width: 100%">
               <ElOption value="deepseek-v4-pro" label="deepseek-v4-pro" />
@@ -68,18 +68,21 @@ async function handleGenerate() {
             </ElSelect>
           </ElFormItem>
         </ElCol>
-        <ElCol :span="6">
+        <ElCol :xs="24" :sm="12" :md="6">
           <ElFormItem label="OAIREGBOX API Key">
             <ElInput v-model="store.oaiKey" type="password" show-password placeholder="sk-..." />
           </ElFormItem>
         </ElCol>
-        <ElCol :span="6">
+        <ElCol :xs="24" :sm="12" :md="6">
           <ElFormItem label="生图模型">
             <ElSelect v-model="store.imageModel" style="width: 100%">
               <ElOption value="gpt-image-2-1k" label="gpt-image-2-1k" />
               <ElOption value="gpt-image-2-2k" label="gpt-image-2-2k" />
               <ElOption value="gpt-image-2-4k" label="gpt-image-2-4k" />
               <ElOption value="gpt-image-2" label="gpt-image-2" />
+              <ElOption value="gemini-image" label="gemini-image" />
+              <ElOption value="gemini-image-pro" label="gemini-image-pro" />
+              <ElOption value="gemini-3.1-flash-image-4k" label="gemini-3.1-flash-image-4k" />
             </ElSelect>
           </ElFormItem>
         </ElCol>
@@ -99,7 +102,7 @@ async function handleGenerate() {
       </ElFormItem>
 
       <ElRow :gutter="16">
-        <ElCol :span="6">
+        <ElCol :xs="12" :sm="6" :md="6">
           <ElFormItem label="每张图几个格子">
             <ElSelect v-model="store.perImage" style="width: 100%">
               <ElOption :value="2" label="2 个格子/张" />
@@ -109,22 +112,22 @@ async function handleGenerate() {
             </ElSelect>
           </ElFormItem>
         </ElCol>
-        <ElCol :span="4">
+        <ElCol :xs="6" :sm="4" :md="4">
           <ElFormItem label="生成封面">
             <ElSwitch v-model="store.genCover" />
           </ElFormItem>
         </ElCol>
-        <ElCol :span="4">
+        <ElCol :xs="6" :sm="4" :md="4">
           <ElFormItem label="右下角水印">
             <ElSwitch v-model="store.watermarkEnabled" />
           </ElFormItem>
         </ElCol>
-        <ElCol :span="4">
+        <ElCol :xs="6" :sm="4" :md="4">
           <ElFormItem label="自动出图">
             <ElSwitch v-model="store.autoGenerate" />
           </ElFormItem>
         </ElCol>
-        <ElCol :span="6">
+        <ElCol :xs="18" :sm="6" :md="6">
           <ElFormItem label="水印内容">
             <ElInput
               v-model="store.watermarkText"

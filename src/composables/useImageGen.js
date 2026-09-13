@@ -71,7 +71,7 @@ export function useImageGen() {
   function downloadOne(idx) {
     const r = store.results[idx]
     if (!r?.url) return
-    const filename = r.label.replace(/[^\w\u4e00-\u9fff]/g, '_') + '.png'
+    const filename = (idx + 1) + '.png'
     const a = document.createElement('a')
 
     if (r.url.startsWith('data:')) {
@@ -90,7 +90,7 @@ export function useImageGen() {
     const zip = new JSZip()
     for (let i = 0; i < done.length; i++) {
       const r = done[i]
-      const filename = r.label.replace(/[^\w\u4e00-\u9fff]/g, '_') + '.png'
+      const filename = (i + 1) + '.png'
       progressCb?.(`打包 ${i + 1}/${done.length}`)
 
       if (r.url.startsWith('data:')) {
