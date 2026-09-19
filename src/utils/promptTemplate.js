@@ -101,6 +101,10 @@ export function buildContentUserPrompt(title, items, perImage, watermark, showIn
     prompt += '\n不需要水印，不要在画面中添加任何署名或水印文字。'
   }
 
+  if (extraRequirement && extraRequirement.trim()) {
+    prompt += `\n\n用户补充要求:${extraRequirement.trim()}`
+  }
+
   return prompt
 }
 
@@ -115,10 +119,6 @@ export function buildCoverUserPrompt(title, items, watermark) {
     prompt += `\n水印要求：全图右下角位置用醒目的红字标注：${watermark}`
   } else {
     prompt += '\n不需要水印，不要在画面中添加任何署名或水印文字。'
-  }
-
-  if (extraRequirement && extraRequirement.trim()) {
-    prompt += `\n\n用户补充要求：${extraRequirement.trim()}`
   }
 
   return prompt
