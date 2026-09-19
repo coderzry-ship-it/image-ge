@@ -32,7 +32,7 @@ export function useDeepSeek() {
     })
 
     const contentUserPrompt = buildContentUserPrompt(
-      store.title, items, store.perImage, store.watermark
+      store.title, items, store.perImage, store.watermark, store.showIndex, store.textAlign, store.extraRequirement
     )
 
     const contentResp = await client.post('/v1/chat/completions', {

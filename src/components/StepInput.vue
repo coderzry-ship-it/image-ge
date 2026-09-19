@@ -16,7 +16,7 @@ const logText = ref('')
 
 watch(
   () => [store.dsKey, store.dsModel, store.oaiKey, store.imageModel,
-         store.watermarkEnabled, store.watermarkText, store.isDark, store.imageSize],
+         store.watermarkEnabled, store.watermarkText, store.isDark, store.imageSize, store.showIndex, store.textAlign],
   () => store.persistConfig(),
   { deep: true }
 )
@@ -86,10 +86,9 @@ function handleStop() {
         <ElCol :xs="24" :sm="12" :md="6">
           <ElFormItem label="生图模型">
             <ElSelect v-model="store.imageModel" style="width: 100%">
-              <ElOption value="gpt-image-2-1k" label="gpt-image-2-1k" />
+              <ElOption value="gpt-image-2" label="gpt-image-2" />
               <ElOption value="gpt-image-2-2k" label="gpt-image-2-2k" />
               <ElOption value="gpt-image-2-4k" label="gpt-image-2-4k" />
-              <ElOption value="gpt-image-2" label="gpt-image-2" />
               <ElOption value="gemini-image" label="gemini-image" />
               <ElOption value="gemini-image-pro" label="gemini-image-pro" />
               <ElOption value="gemini-3.1-flash-image-4k" label="gemini-3.1-flash-image-4k" />
@@ -99,18 +98,12 @@ function handleStop() {
         <ElCol :xs="24" :sm="12" :md="6">
           <ElFormItem label="图片尺寸">
             <ElSelect v-model="store.imageSize" filterable allow-create default-first-option style="width: 100%" placeholder="选择或输入尺寸">
-              <ElOption value="3:4" label="3:4 竖屏（推荐）" />
-              <ElOption value="9:16" label="9:16 竖屏" />
+              <ElOption value="2880x3840" label="3:4 竖屏（gpt）" />
+              <ElOption value="3:4" label="3:4 竖屏（gemini）" />
+              <ElOption value="2160x3840" label="9:16 竖屏（gpt）" />
+              <ElOption value="9:16" label="9:16 竖屏（gemini）" />
               <ElOption value="1:1" label="1:1 方形" />
               <ElOption value="16:9" label="16:9 横屏" />
-              <ElOption value="1024x1024" label="1024x1024 方形" />
-              <ElOption value="1024x1824" label="1024x1824 竖屏" />
-              <ElOption value="720x1280" label="720x1280 竖屏" />
-              <ElOption value="1824x1024" label="1824x1024 横屏" />
-              <ElOption value="1280x720" label="1280x720 横屏" />
-              <ElOption value="512x512" label="512x512 方形" />
-              <ElOption value="portrait" label="portrait 竖屏" />
-              <ElOption value="landscape" label="landscape 横屏" />
             </ElSelect>
           </ElFormItem>
         </ElCol>
@@ -155,7 +148,12 @@ function handleStop() {
             <ElSwitch v-model="store.autoGenerate" />
           </ElFormItem>
         </ElCol>
-        <ElCol :xs="18" :sm="6" :md="6">
+        <ElCol :xs="6" :sm="4" :md="4">
+          <ElFormItem label="生成序号">
+            <ElSwitch v-model="store.showIndex" />
+          </ElFormItem>
+        </ElCol>
+        <ElCol :xs="12" :sm="6" :md="6">
           <ElFormItem label="水印内容">
             <ElInput
               v-model="store.watermarkText"
@@ -164,7 +162,24 @@ function handleStop() {
             />
           </ElFormItem>
         </ElCol>
+        <ElCol :xs="12" :sm="6" :md="6">
+          <ElFormItem label="文字对齐">
+            <ElSelect v-model="store.textAlign" style="width: 100%">
+              <ElOption value="left" label="左对齐" />
+              <ElOption value="center" label="居中对齐" />
+            </ElSelect>
+          </ElFormItem>
+        </ElCol>
       </ElRow>
+
+      <ElFormItem label="补充要求（可选）">
+        <ElInput
+          v-model="store.extraRequirement"
+          type="textarea"
+          :autosize="{ minRows: 2, maxRows: 5 }"
+          placeholder="可以输入额外要求，如：画面风格偏暗黑、人物穿古装等..."
+        />
+      </ElFormItem>
 
       <ElButton
         v-if="!loading"

@@ -1,6 +1,6 @@
 <script setup>
 import { ref, onMounted, computed } from 'vue'
-import { ElButton, ElProgress, ElMessage } from 'element-plus'
+import { ElButton, ElProgress, ElMessage, ElImageViewer } from 'element-plus'
 import { Refresh, Download, ArrowLeft, Cellphone } from '@element-plus/icons-vue'
 import { isMobile } from '../utils/mobile'
 import { useAppStore } from '../stores/appStore'
@@ -22,6 +22,11 @@ const saving = ref(false)
 // Save preview modal (fallback)
 const previewVisible = ref(false)
 const previewUrl = ref('')
+
+// Image zoom preview
+const imageViewerVisible = ref(false)
+const imageViewerUrls = ref([])
+const imageViewerIndex = ref(0)
 
 const editVisible = ref(false)
 const editIdx = ref(-1)
@@ -88,6 +93,15 @@ async function handleSave(idx) {
   }
 }
 
+function handlePreview(idx) {
+  const doneResults = store.results.filter(r => r.status === 'done' && r.url)
+  imageViewerUrls.value = doneResults.map(r => r.url)
+  const clickedResult = store.results[idx]
+  const viewerIdx = doneResults.findIndex(r => r.index === clickedResult.index)
+  imageViewerIndex.value = viewerIdx >= 0 ? viewerIdx : 0
+  imageViewerVisible.value = true
+}
+
 async function handleSaveAll() {
   saving.value = true
   try {
@@ -148,6 +162,7 @@ async function handleSaveAll() {
         @edit="handleEdit(r.index)"
         @download="handleDownload(r.index)"
         @save="handleSave(r.index)"
+        @preview="handlePreview(r.index)"
       />
     </div>
 
@@ -156,6 +171,14 @@ async function handleSaveAll() {
     <SavePreviewModal
       v-model="previewVisible"
       :image-url="previewUrl"
+    />
+
+    <ElImageViewer
+      v-if="imageViewerVisible"
+      :url-list="imageViewerUrls"
+      :initial-index="imageViewerIndex"
+      :z-index="3000"
+      @close="imageViewerVisible = false"
     />
 
     <EditPromptModal

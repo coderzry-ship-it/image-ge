@@ -7,7 +7,7 @@ defineProps({
   result: Object,
 })
 
-const emit = defineEmits(['retry', 'edit', 'download', 'save'])
+const emit = defineEmits(['retry', 'edit', 'download', 'save', 'preview'])
 const mobile = isMobile()
 </script>
 
@@ -28,7 +28,7 @@ const mobile = isMobile()
         </div>
       </div>
       <!-- Image -->
-      <img v-if="result.url" :src="result.url" :alt="result.label" class="preview-img" />
+      <img v-if="result.url" :src="result.url" :alt="result.label" class="preview-img" @click="emit('preview')" style="cursor: zoom-in;" />
       <div v-else class="placeholder">
         <el-icon :size="48" color="#ddd"><Picture /></el-icon>
       </div>

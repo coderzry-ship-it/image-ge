@@ -24,6 +24,8 @@ export const useAppStore = defineStore('app', () => {
   const imageSize = ref(saved.imageSize || '3:4')
   const watermarkEnabled = ref(saved.watermarkEnabled ?? true)
   const watermarkText = ref(saved.watermarkText || '原创作者：@图解万物')
+  const showIndex = ref(saved.showIndex ?? true)
+  const textAlign = ref(saved.textAlign || 'left')
   const isDark = ref(saved.isDark ?? false)
 
   // Input
@@ -31,6 +33,7 @@ export const useAppStore = defineStore('app', () => {
   const rawContent = ref('')
   const perImage = ref(3)
   const genCover = ref(false)
+  const extraRequirement = ref('')
 
   // Options
   const autoGenerate = ref(true)
@@ -61,6 +64,8 @@ export const useAppStore = defineStore('app', () => {
       imageSize: imageSize.value,
       watermarkEnabled: watermarkEnabled.value,
       watermarkText: watermarkText.value,
+      showIndex: showIndex.value,
+      textAlign: textAlign.value,
       isDark: isDark.value,
     })
   }
@@ -79,8 +84,8 @@ export const useAppStore = defineStore('app', () => {
 
   return {
     dsKey, dsModel, oaiKey, imageModel,
-    watermarkEnabled, watermarkText, isDark, imageSize,
-    title, rawContent, perImage, genCover, autoGenerate,
+    watermarkEnabled, watermarkText, isDark, imageSize, showIndex, textAlign,
+    title, rawContent, perImage, genCover, autoGenerate, extraRequirement,
     currentStep, prompts, results, watermark,
     doneCount, persistConfig, initResults,
   }
