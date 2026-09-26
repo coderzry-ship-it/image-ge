@@ -1,13 +1,19 @@
 <script setup>
-import { watch } from 'vue'
-import { ElSteps, ElStep, ElSwitch } from 'element-plus'
+import { watch, computed } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
+import { ElSwitch, ElMenu, ElMenuItem } from 'element-plus'
 import { Sunny, Moon } from '@element-plus/icons-vue'
 import { useAppStore } from './stores/appStore'
-import StepInput from './components/StepInput.vue'
-import StepPrompts from './components/StepPrompts.vue'
-import StepGenerate from './components/StepGenerate.vue'
 
 const store = useAppStore()
+const route = useRoute()
+const router = useRouter()
+
+const activeMenu = computed(() => route.name || 'batch')
+
+function handleMenuSelect(name) {
+  router.push({ name })
+}
 
 // Apply dark mode
 function applyTheme(dark) {
@@ -25,37 +31,75 @@ watch(() => store.isDark, (val) => {
   <div class="app-container">
     <div class="app-header">
       <div class="header-left">
-        <h1>🎨 AI 批量生图工具</h1>
-        <p>一站式：输入素材 → AI 生成提示词 → 并发生图</p>
+        <h1>🎨 AI 生图工具</h1>
+        <p>批量生图 & 自由创作</p>
       </div>
-      <div class="theme-switch">
-        <el-icon><Sunny /></el-icon>
-        <ElSwitch
-          v-model="store.isDark"
-          inline-prompt
-          style="margin: 0 6px"
-        />
-        <el-icon><Moon /></el-icon>
+      <div class="header-right">
+        <ElMenu
+          :default-active="activeMenu"
+          mode="horizontal"
+          :ellipsis="false"
+          class="nav-menu"
+          @select="handleMenuSelect"
+        >
+          <ElMenuItem index="batch">📦 批量生图</ElMenuItem>
+          <ElMenuItem index="free">🎨 自由生图</ElMenuItem>
+        </ElMenu>
+        <div class="theme-switch">
+          <el-icon><Sunny /></el-icon>
+          <ElSwitch
+            v-model="store.isDark"
+            inline-prompt
+            style="margin: 0 6px"
+          />
+          <el-icon><Moon /></el-icon>
+        </div>
       </div>
     </div>
 
-    <ElSteps :active="store.currentStep - 1" finish-status="success" align-center style="margin-bottom: 28px">
-      <ElStep title="输入素材" @click.native="store.currentStep = 1" style="cursor:pointer" />
-      <ElStep title="生成提示词" @click.native="store.prompts.length && (store.currentStep = 2)" style="cursor:pointer" />
-      <ElStep title="批量生图" @click.native="store.results.length && (store.currentStep = 3)" style="cursor:pointer" />
-    </ElSteps>
-
-    <StepInput v-if="store.currentStep === 1" />
-    <StepPrompts v-else-if="store.currentStep === 2" />
-    <StepGenerate v-else-if="store.currentStep === 3" />
+    <router-view />
   </div>
 </template>
 
 <style lang="scss" scoped>
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
 .theme-switch {
   display: flex;
   align-items: center;
   gap: 2px;
   font-size: 18px;
+}
+.nav-menu {
+  border-bottom: none !important;
+  background: transparent !important;
+  :deep(.el-menu-item) {
+    font-size: 14px;
+    font-weight: 600;
+    border-bottom: 2px solid transparent;
+    &.is-active {
+      border-bottom-color: var(--el-color-primary);
+    }
+  }
+}
+@media (max-width: 768px) {
+  .app-header {
+    flex-direction: column;
+    align-items: flex-start !important;
+    gap: 12px;
+  }
+  .header-right {
+    width: 100%;
+    justify-content: space-between;
+  }
+  .nav-menu {
+    :deep(.el-menu-item) {
+      font-size: 13px;
+      padding: 0 12px;
+    }
+  }
 }
 </style>
