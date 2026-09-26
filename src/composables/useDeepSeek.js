@@ -137,12 +137,47 @@ export function useDeepSeek(externalStore) {
       else throw new Error('无法解析 DeepSeek 返回的提示词 JSON')
     }
 
-    return arr.map((item, i) => ({
+    const prompts = arr.map((item, i) => ({
       index: i + 1,
       label: `单张图 ${i + 1}`,
       prompt: item.prompt,
       type: 'single',
     }))
+
+    if (store.genCover) {
+      const coverUserPrompt = buildCoverUserPrompt(
+        store.title, items, store.watermark
+      )
+      const coverResp = await client.post('/v1/chat/completions', {
+        model: store.dsModel,
+        messages: [
+          { role: 'system', content: COVER_SYSTEM_PROMPT },
+          { role: 'user', content: coverUserPrompt },
+        ],
+        temperature: 0.7,
+      }, { signal: abortController?.signal })
+
+      let coverText = coverResp.data.choices?.[0]?.message?.content || ''
+      coverText = coverText.replace(/\`\`\`json\s*/g, '').replace(/\`\`\`/g, '').trim()
+
+      let coverObj
+      try {
+        coverObj = JSON.parse(coverText)
+      } catch {
+        const match = coverText.match(/\{[\s\S]*\}/)
+        if (match) coverObj = JSON.parse(match[0])
+        else throw new Error('无法解析封面提示词 JSON')
+      }
+
+      prompts.push({
+        index: prompts.length + 1,
+        label: '封面图',
+        prompt: coverObj.prompt,
+        type: 'cover',
+      })
+    }
+
+    return prompts
   }
 
   async function generateStoryPrompts() {

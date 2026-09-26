@@ -161,7 +161,7 @@ export function buildSingleUserPrompt(title, items, watermark, showIndex, textAl
   })
 
   if (showIndex) {
-    prompt += '\n序号要求：顶部横幅中的文字前面必须带序号，如"1、xxx"、"2、xxx"，序号从素材原始编号开始。左上角蓝色圆形徽章也要有对应序号。'
+    prompt += '\n序号要求：只在左上角绘制蓝色圆形序号徽章，顶部横幅中的文字前面不要带序号编号（如"1、""2、"），直接写内容文字。'
   } else {
     prompt += '\n序号要求：顶部横幅中的文字前面不要带序号编号，直接写内容文字。左上角也不要绘制蓝色圆形序号徽章。'
   }

@@ -42,9 +42,9 @@ watch(() => store.isDark, (val) => {
           class="nav-menu"
           @select="handleMenuSelect"
         >
-          <ElMenuItem index="batch">📦 批量生图</ElMenuItem>
-          <ElMenuItem index="single">📖 单张漫画</ElMenuItem>
-          <ElMenuItem index="story">📚 故事漫画</ElMenuItem>
+          <ElMenuItem index="batch">📦 分格漫画批量生成</ElMenuItem>
+          <ElMenuItem index="single">📖 单张漫画批量生成</ElMenuItem>
+          <ElMenuItem index="story">📚 故事漫画一键生成</ElMenuItem>
           <ElMenuItem index="free">🎨 自由生图</ElMenuItem>
         </ElMenu>
         <div class="theme-switch">
