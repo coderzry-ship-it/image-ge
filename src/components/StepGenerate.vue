@@ -1,16 +1,18 @@
 <script setup>
-import { ref, onMounted, computed } from 'vue'
+import { ref, onMounted, computed, inject } from 'vue'
 import { ElButton, ElProgress, ElMessage, ElImageViewer } from 'element-plus'
 import { Refresh, Download, ArrowLeft, Cellphone } from '@element-plus/icons-vue'
 import { isMobile } from '../utils/mobile'
 import { useAppStore } from '../stores/appStore'
 import { useImageGen } from '../composables/useImageGen'
+
+// Use injected pageStore (from batch or single page), fallback to appStore
 import ImageCard from './ImageCard.vue'
 import EditPromptModal from './EditPromptModal.vue'
 import SavePreviewModal from './SavePreviewModal.vue'
 
-const store = useAppStore()
-const imageGen = useImageGen()
+const store = inject('pageStore', useAppStore())
+const imageGen = useImageGen(store)
 const logText = ref('')
 const downloading = ref(false)
 const downloadText = ref('')

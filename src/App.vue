@@ -43,6 +43,7 @@ watch(() => store.isDark, (val) => {
           @select="handleMenuSelect"
         >
           <ElMenuItem index="batch">📦 批量生图</ElMenuItem>
+          <ElMenuItem index="single">📖 单张漫画</ElMenuItem>
           <ElMenuItem index="free">🎨 自由生图</ElMenuItem>
         </ElMenu>
         <div class="theme-switch">

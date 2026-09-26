@@ -1,10 +1,10 @@
 <script setup>
-import { ref } from 'vue'
+import { ref, inject } from 'vue'
 import { ElButton, ElInput, ElMessage, ElCard } from 'element-plus'
 import { CopyDocument, Picture, ArrowLeft } from '@element-plus/icons-vue'
 import { useAppStore } from '../stores/appStore'
 
-const store = useAppStore()
+const store = inject('pageStore', useAppStore())
 
 function copyPrompt(idx) {
   navigator.clipboard.writeText(store.prompts[idx].prompt).then(() => {

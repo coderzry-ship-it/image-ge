@@ -3,8 +3,10 @@ import { useAppStore } from '../stores/appStore'
 import {
   CONTENT_SYSTEM_PROMPT,
   COVER_SYSTEM_PROMPT,
+  SINGLE_SYSTEM_PROMPT,
   buildContentUserPrompt,
   buildCoverUserPrompt,
+  buildSingleUserPrompt,
   parseItems,
 } from '../utils/promptTemplate'
 
@@ -18,8 +20,8 @@ const OPTIMIZE_SYSTEM_PROMPT = `你是一个 AI 绘画提示词优化专家。�
 
 直接返回优化后的完整提示词文本，不要加任何解释、标注或 JSON 包裹。`
 
-export function useDeepSeek() {
-  const store = useAppStore()
+export function useDeepSeek(externalStore) {
+  const store = externalStore || useAppStore()
   let abortController = null
 
   async function generatePrompts() {
@@ -99,6 +101,48 @@ export function useDeepSeek() {
     return prompts
   }
 
+  async function generateSinglePrompts() {
+    const items = parseItems(store.rawContent)
+    if (!items.length) throw new Error('未解析到有效素材')
+
+    const client = axios.create({
+      baseURL: 'https://api.deepseek.com',
+      headers: { Authorization: `Bearer ${store.dsKey}` },
+    })
+
+    const userPrompt = buildSingleUserPrompt(
+      store.title, items, store.watermark, store.showIndex, store.textAlign, store.extraRequirement
+    )
+
+    const resp = await client.post('/v1/chat/completions', {
+      model: store.dsModel,
+      messages: [
+        { role: 'system', content: SINGLE_SYSTEM_PROMPT },
+        { role: 'user', content: userPrompt },
+      ],
+      temperature: 0.7,
+    }, { signal: abortController?.signal })
+
+    let text = resp.data.choices?.[0]?.message?.content || ''
+    text = text.replace(/\`\`\`json\s*/g, '').replace(/\`\`\`/g, '').trim()
+
+    let arr
+    try {
+      arr = JSON.parse(text)
+    } catch {
+      const match = text.match(/\[[\s\S]*\]/)
+      if (match) arr = JSON.parse(match[0])
+      else throw new Error('无法解析 DeepSeek 返回的提示词 JSON')
+    }
+
+    return arr.map((item, i) => ({
+      index: i + 1,
+      label: `单张图 ${i + 1}`,
+      prompt: item.prompt,
+      type: 'single',
+    }))
+  }
+
   async function optimizePrompt(originalPrompt) {
     if (!store.dsKey) throw new Error('请先填写 DeepSeek API Key')
 
@@ -133,5 +177,5 @@ export function useDeepSeek() {
     }
   }
 
-  return { generatePrompts, optimizePrompt, createAbortController, cancelGeneration }
+  return { generatePrompts, generateSinglePrompts, optimizePrompt, createAbortController, cancelGeneration }
 }

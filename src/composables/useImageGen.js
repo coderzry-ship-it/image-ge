@@ -3,8 +3,8 @@ import JSZip from 'jszip'
 import { useAppStore } from '../stores/appStore'
 import { base64ToFile, tryShareFiles } from '../utils/mobile'
 
-export function useImageGen() {
-  const store = useAppStore()
+export function useImageGen(externalStore) {
+  const store = externalStore || useAppStore()
   const logs = []
   let logCallback = null
 

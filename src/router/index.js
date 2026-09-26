@@ -8,6 +8,12 @@ const routes = [
     meta: { title: '批量生图' },
   },
   {
+    path: '/single',
+    name: 'single',
+    component: () => import('../views/SingleGenerate.vue'),
+    meta: { title: '单张漫画' },
+  },
+  {
     path: '/free',
     name: 'free',
     component: () => import('../views/FreeGenerate.vue'),

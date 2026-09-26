@@ -1,12 +1,12 @@
 <script setup>
 import { provide } from 'vue'
 import { ElSteps, ElStep } from 'element-plus'
-import { useAppStore } from '../stores/appStore'
-import StepInput from '../components/StepInput.vue'
+import { useSingleStore } from '../stores/singleStore'
+import SingleStepInput from '../components/SingleStepInput.vue'
 import StepPrompts from '../components/StepPrompts.vue'
 import StepGenerate from '../components/StepGenerate.vue'
 
-const store = useAppStore()
+const store = useSingleStore()
 provide('pageStore', store)
 </script>
 
@@ -18,7 +18,7 @@ provide('pageStore', store)
       <ElStep title="批量生图" @click.native="store.results.length && (store.currentStep = 3)" style="cursor:pointer" />
     </ElSteps>
 
-    <StepInput v-if="store.currentStep === 1" />
+    <SingleStepInput v-if="store.currentStep === 1" />
     <StepPrompts v-else-if="store.currentStep === 2" />
     <StepGenerate v-else-if="store.currentStep === 3" />
   </div>
