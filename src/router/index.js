@@ -14,6 +14,12 @@ const routes = [
     meta: { title: '单张漫画' },
   },
   {
+    path: '/story',
+    name: 'story',
+    component: () => import('../views/StoryGenerate.vue'),
+    meta: { title: '故事漫画' },
+  },
+  {
     path: '/free',
     name: 'free',
     component: () => import('../views/FreeGenerate.vue'),

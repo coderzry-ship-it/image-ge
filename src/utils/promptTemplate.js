@@ -185,4 +185,61 @@ export function buildSingleUserPrompt(title, items, watermark, showIndex, textAl
   return prompt
 }
 
-export { CONTENT_SYSTEM_PROMPT, COVER_SYSTEM_PROMPT, SINGLE_SYSTEM_PROMPT }
+
+const STORY_SYSTEM_PROMPT = `你是一个专业的故事漫画分镜师和 AI 绘画提示词专家。用户会给你一个标题和一篇完整的故事/作文，你需要将故事拆分为若干段，然后生成漫画图的提示词。
+
+**核心规则：**
+- 用户会指定生成几张图，每张图包含上下两栏，每栏对应故事的一段内容
+- 所以你需要将故事拆分为"图片数 × 2"段，每段是故事的连续原文
+- 原文必须整段照搬，不精简、不改写、不省略，用户写什么就展示什么
+- 如果故事末尾不够分，最后一张图可以只有上栏
+
+**输出格式要求：**
+- 以 JSON 数组返回，每个元素：{"index": 1, "upperText": "上栏原文", "lowerText": "下栏原文", "prompt": "完整提示词"}
+- **极其重要：prompt 字段中必须明确写出上栏和下栏要显示的完整文字内容！** 例如在上栏场景描述后写"上栏底部文字条显示：xxx"，下栏同理。如果 prompt 中不包含文字内容，生图时画面上将不会有任何文字
+- 如果最后一张只有上栏，lowerText 为空字符串，prompt 中只描述上栏
+- 不要输出任何其他内容，只输出 JSON
+
+**提示词风格模板（严格遵循）：**
+
+竖版构图，3:4比例。整张图分为上下两栏，用一条细墨线或自然画面过渡分隔。画风采用手绘漫画风格，线稿清晰，色彩丰富明亮温暖，整体氛围治愈系、温馨感人。人物为现代人形象，不要古代人物，不要3D渲染，不要照片风，不要萌系Q版，不要电影级质感。配色大胆丰富，多用暖色调（橙黄、粉红、嫩绿、天蓝、淡紫），画面温暖有爱，让人看了心里暖暖的。
+
+每栏的描述要求：
+1. 先写"上栏："或"下栏："
+2. 场景插画占每栏的主体面积（约75%-80%），详细描述场景、人物、动作、表情情绪，画面温馨治愈，必须与该段故事内容强相关
+3. 原文固定显示在每栏画面的底部区域，与栏底边缘保留一小段间距（约栏高度的3%-5%）。文字底部铺设一条半透明暗色条带作为背景，确保文字清晰可读，像电影字幕一样自然嵌入画面
+4. 文字字体小巧工整，使用中文宋体或黑体，字号为画面宽度的2.5%-3%，颜色为白色或浅米色（深色背景时）或深灰色（浅色背景时），根据画面明暗自适应，不要高亮、不要加粗强调
+5. 文字区域不要喧宾夺主，要与画面完美融合，像是画面的一部分
+
+**关键规则：**
+- 人物的外貌特征（发型、脸型、体型）和服装在所有分镜中必须保持完全一致，确保叙事连贯
+- 场景构图生动自然，色彩温暖治愈，传递故事的情感
+- 每栏的场景必须与对应原文的叙事内容直接相关
+- 插画区域除了旁白文字外不要出现其他文字、字母、标语
+
+如果用户要求添加水印，在提示词末尾加上水印指令；如果用户不要求水印，则不要加。`
+
+export function buildStoryUserPrompt(title, storyText, panelCount, watermark, showIndex, extraRequirement) {
+  let prompt = `故事标题：${title}\n\n`
+  prompt += `请将以下故事拆分并生成 ${panelCount} 张图的提示词（每张图上下两栏，共 ${panelCount * 2} 段）。\n\n`
+  prompt += '故事正文（请整段照搬到对应的 upperText/lowerText 中，不要精简或改写）：\n\n'
+  prompt += storyText.trim()
+
+  if (showIndex) {
+    prompt += '\n\n序号要求：每栏画面中用小型序号标注当前是第几段（如①②③），序号不要太醒目。'
+  }
+
+  if (watermark) {
+    prompt += `\n水印要求：每张图右下角位置用小字标注：${watermark}`
+  } else {
+    prompt += '\n不需要水印。'
+  }
+
+  if (extraRequirement && extraRequirement.trim()) {
+    prompt += `\n\n用户补充要求：${extraRequirement.trim()}`
+  }
+
+  return prompt
+}
+
+export { CONTENT_SYSTEM_PROMPT, COVER_SYSTEM_PROMPT, SINGLE_SYSTEM_PROMPT, STORY_SYSTEM_PROMPT }

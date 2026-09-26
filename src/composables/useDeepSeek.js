@@ -4,9 +4,11 @@ import {
   CONTENT_SYSTEM_PROMPT,
   COVER_SYSTEM_PROMPT,
   SINGLE_SYSTEM_PROMPT,
+  STORY_SYSTEM_PROMPT,
   buildContentUserPrompt,
   buildCoverUserPrompt,
   buildSingleUserPrompt,
+  buildStoryUserPrompt,
   parseItems,
 } from '../utils/promptTemplate'
 
@@ -143,6 +145,57 @@ export function useDeepSeek(externalStore) {
     }))
   }
 
+  async function generateStoryPrompts() {
+    if (!store.rawContent?.trim()) throw new Error('请输入故事内容')
+
+    const client = axios.create({
+      baseURL: 'https://api.deepseek.com',
+      headers: { Authorization: `Bearer ${store.dsKey}` },
+    })
+
+    const userPrompt = buildStoryUserPrompt(
+      store.title, store.rawContent, store.panelCount, store.watermark, store.showIndex, store.extraRequirement
+    )
+
+    const resp = await client.post('/v1/chat/completions', {
+      model: store.dsModel,
+      messages: [
+        { role: 'system', content: STORY_SYSTEM_PROMPT },
+        { role: 'user', content: userPrompt },
+      ],
+      temperature: 0.7,
+    }, { signal: abortController?.signal })
+
+    let text = resp.data.choices?.[0]?.message?.content || ''
+    text = text.replace(/\`\`\`json\s*/g, '').replace(/\`\`\`/g, '').trim()
+
+    let arr
+    try {
+      arr = JSON.parse(text)
+    } catch {
+      const match = text.match(/\[[\s\S]*\]/)
+      if (match) arr = JSON.parse(match[0])
+      else throw new Error('无法解析 DeepSeek 返回的提示词 JSON')
+    }
+
+    return arr.map((item, i) => {
+      let prompt = item.prompt || ''
+      // Ensure the text content is included in the prompt
+      if (item.upperText && !prompt.includes(item.upperText.substring(0, 10))) {
+        prompt += `\n\n上栏底部文字条显示以下原文："${item.upperText}"`
+      }
+      if (item.lowerText && !prompt.includes(item.lowerText.substring(0, 10))) {
+        prompt += `\n\n下栏底部文字条显示以下原文："${item.lowerText}"`
+      }
+      return {
+        index: i + 1,
+        label: `故事图 ${i + 1}`,
+        prompt,
+        type: 'story',
+      }
+    })
+  }
+
   async function optimizePrompt(originalPrompt) {
     if (!store.dsKey) throw new Error('请先填写 DeepSeek API Key')
 
@@ -177,5 +230,5 @@ export function useDeepSeek(externalStore) {
     }
   }
 
-  return { generatePrompts, generateSinglePrompts, optimizePrompt, createAbortController, cancelGeneration }
+  return { generatePrompts, generateSinglePrompts, generateStoryPrompts, optimizePrompt, createAbortController, cancelGeneration }
 }
