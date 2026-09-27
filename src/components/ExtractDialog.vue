@@ -16,6 +16,7 @@ const emit = defineEmits(['update:modelValue', 'fill'])
 const store = useAppStore()
 const API_VIDEO = 'https://apicx.asia/api/video_parse_api'
 const API_XHS = 'https://apicx.asia/api/xhs'
+const API_DOUYIN = 'https://apicx.asia/api/douyin_parser'
 
 const inputUrl = ref('')
 const loading = ref(false)
@@ -45,7 +46,7 @@ function parseApiResponse(respData) {
     cover: d.cover || '',
     videoUrl: d.url || '',
     type: d.type || '',
-    author: d.author?.name || '',
+    author: typeof d.author === 'string' ? d.author : (d.author?.name || ''),
     images: [],
   }
   if (d.images && Array.isArray(d.images)) {
@@ -57,6 +58,10 @@ function parseApiResponse(respData) {
     res.images = [res.cover]
   }
   return res
+}
+
+function isDouyinLink(text) {
+  return /douyin\.com|iesdouyin\.com/i.test(text)
 }
 
 function isXhsLink(text) {
@@ -90,8 +95,9 @@ async function handleExtract() {
     const rawInput = inputUrl.value.trim()
     const url = extractUrl(rawInput)
     const isXhs = isXhsLink(rawInput)
+    const isDouyin = isDouyinLink(rawInput)
 
-    const apiUrl = isXhs ? API_XHS : API_VIDEO
+    const apiUrl = isXhs ? API_XHS : isDouyin ? API_DOUYIN : API_VIDEO
     const resp = await axios.get(apiUrl, {
       params: {
         url: url || rawInput,
