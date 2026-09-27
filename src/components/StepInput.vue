@@ -17,7 +17,7 @@ const logText = ref('')
 const extractVisible = ref(false)
 
 watch(
-  () => [store.imageModel,
+  () => [store.imageModel, store.comicStyle,
          store.watermarkEnabled, store.watermarkText, store.isDark, store.imageSize, store.showIndex, store.textAlign],
   () => store.persistConfig(),
   { deep: true }
@@ -96,6 +96,16 @@ function handleExtractFill({ field, value }) {
               <ElOption value="9:16" label="9:16 竖屏（gemini）" />
               <ElOption value="1:1" label="1:1 方形" />
               <ElOption value="16:9" label="16:9 横屏" />
+            </ElSelect>
+          </ElFormItem>
+        </ElCol>
+        <ElCol :xs="24" :sm="12" :md="6">
+          <ElFormItem label="画面风格">
+            <ElSelect v-model="store.comicStyle" style="width: 100%">
+              <ElOption value="default" label="默认（现代手绘）" />
+              <ElOption value="squidward" label="🐙 章鱼哥风格" />
+              <ElOption value="spongebob" label="🧽 海绵宝宝风格" />
+              <ElOption value="tomcat" label="🐱 汤姆猫风格" />
             </ElSelect>
           </ElFormItem>
         </ElCol>

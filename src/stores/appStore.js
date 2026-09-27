@@ -26,6 +26,7 @@ export const useAppStore = defineStore('app', () => {
   const watermarkText = ref(saved.watermarkText || '原创作者：@图解万物')
   const showIndex = ref(saved.showIndex ?? true)
   const textAlign = ref(saved.textAlign || 'left')
+  const comicStyle = ref(saved.comicStyle || 'default')
   const isDark = ref(saved.isDark ?? false)
   const extractToken = ref(saved.extractToken || '')
 
@@ -67,6 +68,7 @@ export const useAppStore = defineStore('app', () => {
       watermarkText: watermarkText.value,
       showIndex: showIndex.value,
       textAlign: textAlign.value,
+      comicStyle: comicStyle.value,
       isDark: isDark.value,
       extractToken: extractToken.value,
     })
@@ -86,7 +88,7 @@ export const useAppStore = defineStore('app', () => {
 
   return {
     dsKey, dsModel, oaiKey, imageModel,
-    watermarkEnabled, watermarkText, isDark, imageSize, showIndex, textAlign, extractToken,
+    watermarkEnabled, watermarkText, isDark, imageSize, showIndex, textAlign, comicStyle, extractToken,
     title, rawContent, perImage, genCover, autoGenerate, extraRequirement,
     currentStep, prompts, results, watermark,
     doneCount, persistConfig, initResults,

@@ -1,7 +1,7 @@
 import axios from 'axios'
 import { useAppStore } from '../stores/appStore'
 import {
-  CONTENT_SYSTEM_PROMPT,
+  getContentSystemPrompt,
   COVER_SYSTEM_PROMPT,
   SINGLE_SYSTEM_PROMPT,
   STORY_SYSTEM_PROMPT,
@@ -42,7 +42,7 @@ export function useDeepSeek(externalStore) {
     const contentResp = await client.post('/v1/chat/completions', {
       model: store.dsModel,
       messages: [
-        { role: 'system', content: CONTENT_SYSTEM_PROMPT },
+        { role: 'system', content: getContentSystemPrompt(store.comicStyle) },
         { role: 'user', content: contentUserPrompt },
       ],
       temperature: 0.7,
