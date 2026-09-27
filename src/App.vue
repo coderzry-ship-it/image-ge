@@ -31,7 +31,7 @@ watch(() => store.isDark, (val) => {
   <div class="app-container">
     <div class="app-header">
       <div class="header-left">
-        <h1>🎨 AI 生图工具</h1>
+        <h1>🎨 图解万物创作台</h1>
         <p>批量生图 & 自由创作</p>
       </div>
       <div class="header-right">
