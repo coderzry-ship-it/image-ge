@@ -9,6 +9,7 @@ import {
 import { MagicStick, Download, Cellphone, Picture } from '@element-plus/icons-vue'
 import { useAppStore } from '../stores/appStore'
 import { isMobile, tryShareFiles, base64ToFile } from '../utils/mobile'
+import ExtractDialog from '../components/ExtractDialog.vue'
 
 const store = useAppStore()
 const mobile = isMobile()
@@ -21,6 +22,7 @@ const resultUrl = ref('')
 const errorMsg = ref('')
 
 // Image preview
+const extractVisible = ref(false)
 const viewerVisible = ref(false)
 
 async function handleGenerate() {
@@ -80,12 +82,19 @@ async function handleSave() {
     ElMessage.info('请长按图片保存到相册')
   }
 }
+
+function handleExtractFill({ field, value }) {
+  if (field === 'content') prompt.value = value
+}
 </script>
 
 <template>
   <div>
     <div class="card">
-      <div class="section-title">🎨 自由生图</div>
+      <div class="section-title" style="display: flex; align-items: center; justify-content: space-between">
+        <span>🎨 自由生图</span>
+        <ElButton size="small" type="primary" text @click="extractVisible = true">🔗 内容提取</ElButton>
+      </div>
       <p style="color: var(--text-muted); font-size: 13px; margin-bottom: 16px">
         输入提示词，选择模型和尺寸，一键生图。
       </p>
@@ -178,7 +187,9 @@ async function handleSave() {
         @close="viewerVisible = false"
       />
     </div>
-  </div>
+  
+    <ExtractDialog v-model="extractVisible" @fill="handleExtractFill" />
+</div>
 </template>
 
 <style lang="scss" scoped>

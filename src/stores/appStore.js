@@ -27,6 +27,7 @@ export const useAppStore = defineStore('app', () => {
   const showIndex = ref(saved.showIndex ?? true)
   const textAlign = ref(saved.textAlign || 'left')
   const isDark = ref(saved.isDark ?? false)
+  const extractToken = ref(saved.extractToken || '')
 
   // Input
   const title = ref('')
@@ -67,6 +68,7 @@ export const useAppStore = defineStore('app', () => {
       showIndex: showIndex.value,
       textAlign: textAlign.value,
       isDark: isDark.value,
+      extractToken: extractToken.value,
     })
   }
 
@@ -84,7 +86,7 @@ export const useAppStore = defineStore('app', () => {
 
   return {
     dsKey, dsModel, oaiKey, imageModel,
-    watermarkEnabled, watermarkText, isDark, imageSize, showIndex, textAlign,
+    watermarkEnabled, watermarkText, isDark, imageSize, showIndex, textAlign, extractToken,
     title, rawContent, perImage, genCover, autoGenerate, extraRequirement,
     currentStep, prompts, results, watermark,
     doneCount, persistConfig, initResults,

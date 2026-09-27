@@ -8,11 +8,13 @@ import { MagicStick } from '@element-plus/icons-vue'
 import { useAppStore } from '../stores/appStore'
 import { useDeepSeek } from '../composables/useDeepSeek'
 import { ref } from 'vue'
+import ExtractDialog from './ExtractDialog.vue'
 
 const store = useAppStore()
 const { generatePrompts, createAbortController, cancelGeneration } = useDeepSeek()
 const loading = ref(false)
 const logText = ref('')
+const extractVisible = ref(false)
 
 watch(
   () => [store.dsKey, store.dsModel, store.oaiKey, store.imageModel,
@@ -57,11 +59,19 @@ function handleStop() {
   cancelGeneration()
   loading.value = false
 }
+
+function handleExtractFill({ field, value }) {
+  if (field === 'title') store.title = value
+  else if (field === 'content') store.rawContent = value
+}
 </script>
 
 <template>
   <div class="card">
-    <div class="section-title">📝 素材输入</div>
+    <div class="section-title" style="display: flex; align-items: center; justify-content: space-between">
+        <span>📝 素材输入</span>
+        <ElButton size="small" type="primary" text @click="extractVisible = true">🔗 内容提取</ElButton>
+      </div>
 
     <ElForm label-position="top">
       <ElRow :gutter="16">
@@ -201,5 +211,7 @@ function handleStop() {
     </ElForm>
 
     <div v-if="logText" class="log-panel">{{ logText }}</div>
+
+    <ExtractDialog v-model="extractVisible" @fill="handleExtractFill" />
   </div>
 </template>
