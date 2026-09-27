@@ -123,4 +123,13 @@ body {
   .section-title {
     font-size: 16px;
   }
+  .el-dialog {
+    width: 95% !important;
+    margin: 8px auto !important;
+    max-height: 90vh;
+  }
+  .el-dialog__body {
+    max-height: 70vh;
+    overflow-y: auto;
+  }
 }

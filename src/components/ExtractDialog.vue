@@ -216,7 +216,7 @@ function handleFillAll() {
   <ElDialog
     :model-value="modelValue"
     title="🔗 内容提取"
-    width="720px"
+    width="720px" style="max-width: 95%"
     :close-on-click-modal="false"
     destroy-on-close
     @update:model-value="$emit('update:modelValue', $event)"
