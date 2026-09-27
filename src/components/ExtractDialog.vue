@@ -74,10 +74,7 @@ function parseXhsResponse(respData) {
     videoUrl: '',
     type: 'xhs',
     author: note.author || note.nickname || '',
-    images: Array.isArray(d.images) ? d.images.map(url => {
-      // Clean up XHS CDN URLs - remove HTML artifacts if any
-      return url.replace(/<[^>]*>/g, '').replace(/\s+/g, '').split('?imageView2')[0] + '?imageView2/format/jpeg'
-    }) : [],
+    images: Array.isArray(d.images) ? d.images : [],
   }
 }
 
