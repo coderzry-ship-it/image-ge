@@ -5,7 +5,7 @@ import {
   ElDialog, ElForm, ElFormItem, ElInput, ElButton, ElMessage,
   ElImage, ElImageViewer, ElTag, ElDivider, ElTooltip, ElAlert,
 } from 'element-plus'
-import { Search, CopyDocument, Picture, Setting } from '@element-plus/icons-vue'
+import { Search, CopyDocument, Picture } from '@element-plus/icons-vue'
 import { useAppStore } from '../stores/appStore'
 
 const props = defineProps({
@@ -22,8 +22,6 @@ const loading = ref(false)
 const result = ref(null)
 const ocrLoading = ref(false)
 const ocrText = ref('')
-const showTokenInput = ref(!store.extractToken)
-
 const viewerVisible = ref(false)
 const viewerUrls = ref([])
 const viewerIndex = ref(0)
@@ -120,12 +118,6 @@ async function handleExtract() {
   } finally {
     loading.value = false
   }
-}
-
-function saveToken() {
-  store.persistConfig()
-  showTokenInput.value = false
-  ElMessage.success('Token 已保存')
 }
 
 function copyText(text) {
@@ -232,23 +224,6 @@ function handleFillAll() {
     <p style="color: var(--text-muted); font-size: 13px; margin-bottom: 16px">
       粘贴小红书、抖音、快手、B站等平台作品链接，自动提取标题、文案和图片文字，一键填充到输入框。
     </p>
-
-    <!-- Token config -->
-    <div v-if="showTokenInput || !store.extractToken" class="token-config">
-      <ElAlert type="info" :closable="false" style="margin-bottom: 12px">
-        <template #title>
-          首次使用需填写解析 Token，
-          <a href="https://apicx.asia/auth/login" target="_blank" style="color: var(--el-color-primary)">点击注册获取</a>
-        </template>
-      </ElAlert>
-      <div style="display: flex; gap: 8px">
-        <ElInput v-model="store.extractToken" placeholder="填写 apicx.asia 的 Token" show-password style="flex: 1" />
-        <ElButton type="primary" @click="saveToken">保存</ElButton>
-      </div>
-    </div>
-    <div v-else style="margin-bottom: 12px">
-      <ElButton text size="small" :icon="Setting" @click="showTokenInput = true">修改 Token</ElButton>
-    </div>
 
     <!-- URL Input -->
     <ElInput
@@ -357,12 +332,6 @@ function handleFillAll() {
 </template>
 
 <style lang="scss" scoped>
-.token-config {
-  margin-bottom: 16px;
-  padding: 12px 16px;
-  background: var(--el-fill-color-lighter);
-  border-radius: 8px;
-}
 .extract-section {
   margin-bottom: 16px;
 }

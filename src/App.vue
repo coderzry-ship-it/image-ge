@@ -1,13 +1,16 @@
 <script setup>
-import { watch, computed } from 'vue'
+import { watch, computed, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { ElSwitch, ElMenu, ElMenuItem } from 'element-plus'
-import { Sunny, Moon } from '@element-plus/icons-vue'
+import { Sunny, Moon, Setting } from '@element-plus/icons-vue'
+import SettingsDialog from './components/SettingsDialog.vue'
 import { useAppStore } from './stores/appStore'
 
 const store = useAppStore()
 const route = useRoute()
 const router = useRouter()
+
+const settingsVisible = ref(false)
 
 const activeMenu = computed(() => route.name || 'batch')
 
@@ -47,6 +50,7 @@ watch(() => store.isDark, (val) => {
           <ElMenuItem index="story">📚 故事漫画一键生成</ElMenuItem>
           <ElMenuItem index="free">🎨 自由生图</ElMenuItem>
         </ElMenu>
+        <ElButton :icon="Setting" circle size="small" @click="settingsVisible = true" title="全局配置" />
         <div class="theme-switch">
           <el-icon><Sunny /></el-icon>
           <ElSwitch
@@ -60,6 +64,8 @@ watch(() => store.isDark, (val) => {
     </div>
 
     <router-view />
+
+    <SettingsDialog v-model="settingsVisible" />
   </div>
 </template>
 

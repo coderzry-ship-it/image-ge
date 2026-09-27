@@ -102,11 +102,6 @@ function handleExtractFill({ field, value }) {
       <ElForm label-position="top">
         <ElRow :gutter="16">
           <ElCol :xs="24" :sm="12" :md="8">
-            <ElFormItem label="OAIREGBOX API Key">
-              <ElInput v-model="store.oaiKey" type="password" show-password placeholder="sk-..." />
-            </ElFormItem>
-          </ElCol>
-          <ElCol :xs="24" :sm="12" :md="8">
             <ElFormItem label="生图模型">
               <ElSelect v-model="imageModel" style="width: 100%">
                 <ElOption value="gpt-image-2" label="gpt-image-2" />

@@ -17,7 +17,7 @@ const logText = ref('')
 const extractVisible = ref(false)
 
 watch(
-  () => [store.dsKey, store.dsModel, store.oaiKey, store.imageModel,
+  () => [store.imageModel,
          store.watermarkEnabled, store.watermarkText, store.isDark, store.imageSize, store.showIndex],
   () => store.persistConfig(),
   { deep: true }
@@ -76,24 +76,6 @@ function handleExtractFill({ field, value }) {
 
     <ElForm label-position="top">
       <ElRow :gutter="16">
-        <ElCol :xs="24" :sm="12" :md="6">
-          <ElFormItem label="DeepSeek API Key">
-            <ElInput v-model="store.dsKey" type="password" show-password placeholder="sk-..." />
-          </ElFormItem>
-        </ElCol>
-        <ElCol :xs="24" :sm="12" :md="6">
-          <ElFormItem label="DeepSeek 模型">
-            <ElSelect v-model="store.dsModel" style="width: 100%">
-              <ElOption value="deepseek-v4-pro" label="deepseek-v4-pro" />
-              <ElOption value="deepseek-flash" label="deepseek-flash（更快）" />
-            </ElSelect>
-          </ElFormItem>
-        </ElCol>
-        <ElCol :xs="24" :sm="12" :md="6">
-          <ElFormItem label="OAIREGBOX API Key">
-            <ElInput v-model="store.oaiKey" type="password" show-password placeholder="sk-..." />
-          </ElFormItem>
-        </ElCol>
         <ElCol :xs="24" :sm="12" :md="6">
           <ElFormItem label="生图模型">
             <ElSelect v-model="store.imageModel" style="width: 100%">
